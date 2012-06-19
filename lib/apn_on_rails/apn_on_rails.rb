@@ -7,7 +7,7 @@ if defined?(Rails.root)
   rails_root = Rails.root.to_s
 end
 
-require File.join(rails_root, 'config', 'initializers', 'apn_settings')
+require File.join(rails_root, 'config', 'initializers', 'apn_settings.rb')
 
 rails_env = 'development'
 if defined?(Rails.env)
