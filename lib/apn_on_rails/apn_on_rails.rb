@@ -11,6 +11,9 @@ rails_env = 'development'
 if defined?(Rails.env)
   rails_env = Rails.env
 end
+if APN::App::FORCE_DEVELOPMENT
+  rails_env = 'development'
+end
 
 configatron.apn.set_default(:passphrase, '')
 configatron.apn.set_default(:port, 2195)
