@@ -7,13 +7,13 @@ if defined?(Rails.root)
   rails_root = Rails.root.to_s
 end
 
-require File.join(Rails.root.to_s, 'config', 'initializers', 'apn_settings.rb')
+require File.join(File.expand_path(''), 'config', 'apn_settings.rb')
 
 rails_env = 'development'
 if defined?(Rails.env)
   rails_env = Rails.env
 end
-if APN::App::FORCE_DEVELOPMENT
+if APN::FORCE_DEVELOPMENT
   rails_env = 'development'
 end
 
