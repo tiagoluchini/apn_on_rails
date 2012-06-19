@@ -8,7 +8,7 @@ class APN::App < APN::Base
   has_many :unsent_group_notifications, :through => :groups
 
   def cert
-    (RAILS_ENV == 'production' ? apn_prod_cert : apn_dev_cert)
+    (Rails.env == 'production' ? apn_prod_cert : apn_dev_cert)
   end
 
   # Opens a connection to the Apple APN server and attempts to batch deliver
@@ -31,22 +31,13 @@ class APN::App < APN::Base
     apps.each do |app|
       app.send_notifications
     end
-    if !configatron.apn.cert.blank?
-      global_cert = File.read(configatron.apn.cert)
-      send_notifications_for_cert(global_cert, nil)
-    end
   end
 
   def self.send_notifications_for_cert(the_cert, app_id)
     # unless self.unsent_notifications.nil? || self.unsent_notifications.empty?
-      if (app_id == nil)
-        conditions = "app_id is null"
-      else
-        conditions = ["app_id = ?", app_id]
-      end
       begin
         APN::Connection.open_for_delivery({:cert => the_cert}) do |conn, sock|
-          APN::Device.find_each(:conditions => conditions) do |dev|
+          APN::Device.find_each(:conditions => ["app_id = ?", app_id]) do |dev|
             dev.unsent_notifications.each do |noty|
               conn.write(noty.message_for_sending)
               noty.sent_at = Time.now
@@ -123,10 +114,6 @@ class APN::App < APN::Base
     apps = APN::App.all
     apps.each do |app|
       app.process_devices
-    end
-    if !configatron.apn.cert.blank?
-      global_cert = File.read(configatron.apn.cert)
-      APN::App.process_devices_for_cert(global_cert)
     end
   end
 
