@@ -8,8 +8,8 @@ class APN::App < APN::Base
   has_many :unsent_group_notifications, :through => :groups
 
   def cert
-    rails_env = Rails.env unless configatron.apn.force_development
-    rails_env = 'development' if configatron.apn.force_development
+    rails_env = Rails.env unless FORCE_DEVELOPMENT
+    rails_env = 'development' if FORCE_DEVELOPMENT
     (rails_env == 'production' ? apn_prod_cert : apn_dev_cert)
   end
 
